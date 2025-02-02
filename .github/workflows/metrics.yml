@@ -1,0 +1,133 @@
+name: MetricsRender
+on:
+  # Schedule updates (each hour)
+  schedule:
+    - cron: "0 3 * * *"
+  # Lines below let you run workflow manually and on each commit (optional)
+  workflow_dispatch:
+  push:
+    branches: 
+      - main
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    environment: 
+      name: production
+    steps:
+      - name: Sponsors introduction
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/sponsors.svg
+          token: ${{ secrets.METRICS_TOKEN }}
+          base: ""
+          plugin_sponsors: yes
+
+      - name: header
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/header.svg
+          # You'll need to setup a personal token in your secrets.
+          token: ${{ secrets.METRICS_TOKEN }}
+          # GITHUB_TOKEN is a special auto-generated token used for commits
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Options
+          user: samvictordr
+          template: classic
+          base: header
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
+
+      - name: lines
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/lines-of-code.svg
+          token: ${{ secrets.METRICS_TOKEN }}
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+          base: "repositories"
+          plugin_lines: yes
+
+      - name: acti_comm
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/acti_comm.svg
+          # You'll need to setup a personal token in your secrets.
+          token: ${{ secrets.METRICS_TOKEN }}
+          # GITHUB_TOKEN is a special auto-generated token used for commits
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Options
+          user: samvictordr
+          template: classic
+          base: activity, community
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
+          
+      - name: iso_calendar
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/iso_calender.svg
+          # You'll need to setup a personal token in your secrets.
+          token: ${{ secrets.METRICS_TOKEN }}
+          # GITHUB_TOKEN is a special auto-generated token used for commits
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Options
+          user: samvictordr
+          template: classic
+          base: ""
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: half-year
+
+      - name: issue_pr_lang
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/issue_pr_lang.svg
+          # You'll need to setup a personal token in your secrets.
+          token: ${{ secrets.METRICS_TOKEN }}
+          # GITHUB_TOKEN is a special auto-generated token used for commits
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Options
+          user: samvictordr
+          template: classic
+          base: ""
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
+          plugin_followup: yes
+          plugin_languages: yes
+
+      - name: repositories
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/repositories.svg
+          # You'll need to setup a personal token in your secrets.
+          token: ${{ secrets.METRICS_TOKEN }}
+          # GITHUB_TOKEN is a special auto-generated token used for commits
+          committer_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Options
+          user: samvictordr
+          template: classic
+          base: repositories
+          config_timezone: ${{ secrets.USER_TIMEZONE }}
+
+      - name: Favorite anime and currently watching
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/anilist.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_anilist: yes
+          plugin_anilist_medias: anime
+          plugin_anilist_sections: favorites, watching
+          plugin_anilist_limit: 1
+
+      - name: Favorite characters
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics/characters.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_anilist: yes
+          plugin_anilist_sections: characters
+          plugin_anilist_limit_characters: 22
